@@ -1,5 +1,6 @@
 FROM hydroshare/hs_docker_base:release-1.13 as base
 
+FROM scratch
 # flatten the image
 COPY --from=base / /
 
