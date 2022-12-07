@@ -1,4 +1,8 @@
-FROM hydroshare/hs_docker_base:release-1.13
+FROM hydroshare/hs_docker_base:release-1.13 as base
+
+# flatten the image
+COPY --from=base / /
+
 MAINTAINER Phuong Doan pdoan@cuahsi.org
 
 # Set the locale. TODO - remove once we have a better alternative worked out
