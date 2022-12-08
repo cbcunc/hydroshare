@@ -73,9 +73,12 @@ class FileOverrideException(Exception):
 
 @celery_app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
-    if (hasattr(settings, 'DISABLE_PERIODIC_TASKS') and settings.DISABLE_PERIODIC_TASKS):
-        logger.debug("Periodic tasks are disabled in SETTINGS")
+    # if (hasattr(settings, 'DISABLE_PERIODIC_TASKS') and settings.DISABLE_PERIODIC_TASKS):
+    #    logger.debug("Periodic tasks are disabled in SETTINGS")
+    if False:
+        pass
     else:
+        sender.add_periodic_task(crontab(minute='*/2'), task_fails_every_other_min.s())
         sender.add_periodic_task(crontab(minute=30, hour=23), nightly_zips_cleanup.s())
         sender.add_periodic_task(crontab(minute=0, hour=0), manage_task_nightly.s())
         sender.add_periodic_task(crontab(minute=15, hour=0, day_of_week=1, day_of_month='1-7'),
@@ -84,6 +87,11 @@ def setup_periodic_tasks(sender, **kwargs):
         sender.add_periodic_task(crontab(day_of_month=1), monthly_group_membership_requests_cleanup.s())
         sender.add_periodic_task(crontab(minute=30, hour=0), daily_innactive_group_requests_cleanup.s())
         sender.add_periodic_task(crontab(day_of_week=1), task_notification_cleanup.s())
+
+
+@celery_app.task(ignore_result=True)
+def task_fails_every_other_min():
+    raise Exception
 
 
 # Currently there are two different cleanups scheduled.
