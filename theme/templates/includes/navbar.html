@@ -543,6 +543,16 @@
                         "delivered": "Delivered"
                     }
                 },
+                "test taks": {
+                    title: "Test task",
+                    status: {
+                        "progress": "In progress...",
+                        "aborted": "Aborted",
+                        "completed": "Completed",
+                        "failed": "Failed",
+                        "delivered": "Delivered"
+                    }
+                },
                 "resource version": {
                     title: "Resource versioning",
                     status: {
@@ -785,6 +795,11 @@
                         }
                         break;
                     case "resource copy":
+                        if (task.status === "completed" && task.payload) {
+                            vue.deliverTask(task);
+                        }
+                        break;
+                    case "test task":
                         if (task.status === "completed" && task.payload) {
                             vue.deliverTask(task);
                         }

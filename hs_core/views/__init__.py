@@ -51,7 +51,7 @@ from hs_tools_resource.app_launch_helper import resource_level_tool_urls
 from hs_core.task_utils import get_all_tasks, revoke_task_by_id, dismiss_task_by_id, \
     set_task_delivered_by_id, get_or_create_task_notification, get_task_user_id, get_resource_delete_task
 from hs_core.tasks import copy_resource_task, replicate_resource_bag_to_user_zone_task, \
-    create_new_version_resource_task, delete_resource_task
+    create_new_version_resource_task, delete_resource_task, nightly_metadata_review_reminder
 from hs_core.enums import RelationTypes
 
 from . import resource_rest_api
@@ -860,6 +860,16 @@ def copy_resource(request, shortkey, *args, **kwargs):
             return HttpResponseRedirect(response_url)
         except utils.ResourceCopyException:
             return HttpResponseRedirect(res.get_absolute_url())
+
+def test_res_task(request, shortkey, *args, **kwargs):
+    res, authorized, user = authorize(request, shortkey,
+                                      needed_permission=ACTION_TO_AUTHORIZE.VIEW_RESOURCE)
+    from hs_core.receivers import hs_update_web_services
+    task = hs_update_web_services(sender=None, resource=shortkey)
+    # task_id = task.task_id
+    # task_dict = get_or_create_task_notification(task_id, name='test task', payload=shortkey, username=user.username)
+    # return JsonResponse(task_dict)
+    return HttpResponse(task)
 
 res_id = openapi.Parameter('id', openapi.IN_PATH, description="Id of the resource to be copied", type=openapi.TYPE_STRING)
 @swagger_auto_schema(method='post', operation_description="Copy a resource",

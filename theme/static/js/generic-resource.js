@@ -333,6 +333,20 @@ $(document).ready(function () {
         })
     });
 
+    $("#test-button").on('click', function(e) {
+        e.stopImmediatePropagation();
+        $.ajax({
+            type: "POST",
+            url: "/hsapi/_internal/" + SHORT_ID + "/test-task/",
+            success: function (task) {
+                alert("success test")
+            },
+            error: function (xhr, errmsg, err) {
+                display_error_message('Failed test', xhr.responseText);
+            }
+        })
+    });
+
     $("#new-version-btn").on('click', function(e) {
        e.stopImmediatePropagation();
        // disable the new version icon to prevent users from clicking it again until it is done

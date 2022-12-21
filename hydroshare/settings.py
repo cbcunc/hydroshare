@@ -750,6 +750,7 @@ TASK_NAME_LIST = [
     'hs_core.tasks.create_temp_zip',
     'hs_core.tasks.unzip_task',
     'hs_core.tasks.copy_resource_task',
+    'hs_core.tasks.test_task',
     'hs_core.tasks.replicate_resource_bag_to_user_zone_task',
     'hs_core.tasks.create_new_version_resource_task',
     'hs_core.tasks.delete_resource_task',
@@ -796,3 +797,6 @@ else:
 #sys.stderr = codecs.getwriter('utf8')(sys.stderr)
 
 MODEL_PROGRAM_META_SCHEMA_TEMPLATE_PATH = "/hydroshare/hs_file_types/model_meta_schema_templates"
+DEFAULT_SUPPORT_EMAIL = "devincowan@pm.me"
+USE_CROSSREF_TEST = True
+DEBUG = True

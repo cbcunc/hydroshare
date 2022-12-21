@@ -188,17 +188,20 @@ def metadata_element_pre_update_handler(sender, **kwargs):
 def hs_update_web_services(sender, **kwargs):
     """Signal to update resource web services."""
 
-    if settings.HSWS_ACTIVATED:
-        rid = None
-        if "resource" in kwargs:
-            rid = kwargs.get("resource").short_id
-        elif "resource_id" in kwargs:
-            rid = kwargs.get('resource_id')
-        if rid:
-            update_web_services.apply_async((
-                settings.HSWS_URL,
-                settings.HSWS_API_TOKEN,
-                settings.HSWS_TIMEOUT,
-                settings.HSWS_PUBLISH_URLS,
-                rid
-            ), countdown=1)
+    rid = None
+    if "resource" in kwargs:
+        rid = kwargs.get("resource")
+    elif "resource_id" in kwargs:
+        rid = kwargs.get('resource_id')
+    if rid:
+        HSWS_URL = "http://10.37.142.23:8060/his/services/update"
+        HSWS_API_TOKEN = "d1caabf3059ef7ffd99d890aba57100da2e0efc8"
+        HSWS_TIMEOUT = 3
+        HSWS_PUBLISH_URLS = False
+        return update_web_services(
+            HSWS_URL,
+            HSWS_API_TOKEN,
+            HSWS_TIMEOUT,
+            HSWS_PUBLISH_URLS,
+            rid
+        )

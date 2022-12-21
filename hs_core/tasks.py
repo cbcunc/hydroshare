@@ -559,6 +559,12 @@ def copy_resource_task(ori_res_id, new_res_id=None, request_username=None):
 
 
 @shared_task
+def test_task(ori_res_id, new_res_id=None, request_username=None):
+    ori_res = utils.get_resource_by_shortkey(ori_res_id)
+    return ori_res.get_absolute_url()
+
+
+@shared_task
 def create_new_version_resource_task(ori_res_id, username, new_res_id=None):
     """
     Task for creating a new version of a resource

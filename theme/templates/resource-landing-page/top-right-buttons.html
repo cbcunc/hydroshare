@@ -67,7 +67,8 @@
                     </form>
                 {% endif %}
             {% endif %}
-
+            <a id="test-button" data-toggle="modal">test task
+            </a>
             {% if not is_replaced_by %}
                 {% if user.is_authenticated and rights.statement %}
                     {% if permissions_allow_copy %}
