@@ -8,7 +8,7 @@ from hs_core.signals import pre_metadata_element_create, pre_metadata_element_up
     post_add_reftimeseries_aggregation, post_remove_file_aggregation, post_raccess_change, \
     post_delete_file_from_resource
 from hs_core.tasks import update_web_services
-from hs_core.models import GenericResource, Creator, Contributor, Party
+from hs_core.models import BaseResource, Creator, Contributor, Party
 from django.conf import settings
 from .forms import SubjectsForm, AbstractValidationForm, CreatorValidationForm, \
     ContributorValidationForm, RelationValidationForm, RightsValidationForm, \
@@ -36,7 +36,7 @@ def update_party_instance(sender, instance, created, **kwargs):
             update_active_user_flag(contributor)
 
 
-@receiver(pre_metadata_element_create, sender=GenericResource)
+@receiver(pre_metadata_element_create, sender=BaseResource)
 def metadata_element_pre_create_handler(sender, **kwargs):
     """Select proper form class based on element_name.
 
@@ -99,7 +99,7 @@ def metadata_element_pre_create_handler(sender, **kwargs):
         return {'is_valid': False, 'element_data_dict': None, "errors": element_form.errors}
 
 
-@receiver(pre_metadata_element_update, sender=GenericResource)
+@receiver(pre_metadata_element_update, sender=BaseResource)
 def metadata_element_pre_update_handler(sender, **kwargs):
     """Select proper form class based on element_name.
 
@@ -137,7 +137,7 @@ def metadata_element_pre_update_handler(sender, **kwargs):
                 # for creator or contributor who is not a hydroshare user the 'hydroshare_user_id'
                 # key might be missing in the POST form data
                 if field_name == 'hydroshare_user_id':
-                    matching_key = [key for key in request.POST if '-'+field_name in key]
+                    matching_key = [key for key in request.POST if '-' + field_name in key]
                     if matching_key:
                         matching_key = matching_key[0]
                     else:
@@ -145,11 +145,11 @@ def metadata_element_pre_update_handler(sender, **kwargs):
                 elif field_name == 'identifiers':
                     matching_key = 'identifiers'
                 else:
-                    matching_key = [key for key in request.POST if '-'+field_name in key][0]
+                    matching_key = [key for key in request.POST if '-' + field_name in key][0]
 
                 form_data[field_name] = post_data_dict[matching_key]
             else:
-                matching_key = [key for key in request.POST if '-'+field_name in key][0]
+                matching_key = [key for key in request.POST if '-' + field_name in key][0]
                 form_data[field_name] = request.POST[matching_key]
 
         element_form = element_validation_form(form_data)

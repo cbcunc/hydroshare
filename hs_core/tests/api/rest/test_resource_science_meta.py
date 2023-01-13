@@ -11,7 +11,7 @@ class TestResourceScienceMetadata(HSRESTTestCase):
     def setUp(self):
         super(TestResourceScienceMetadata, self).setUp()
 
-        self.rtype = 'GenericResource'
+        self.rtype = 'CompositeResource'
         self.title = 'My Test resource'
         res = resource.create_resource(self.rtype,
                                        self.user,
@@ -21,7 +21,7 @@ class TestResourceScienceMetadata(HSRESTTestCase):
         self.resources_to_delete.append(self.pid)
 
         # create another resource for testing relation metadata
-        another_res = resource.create_resource('GenericResource',
+        another_res = resource.create_resource('CompositeResource',
                                                self.user,
                                                'My another Test resource')
         self.pid2 = another_res.short_id
@@ -39,7 +39,7 @@ class TestResourceScienceMetadata(HSRESTTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # content = json.loads(response.content.decode())
 
-    def test_put_scimeta_generic_resource(self):
+    def test_put_scimeta_composite_resource(self):
         sysmeta_url = "/hsapi/resource/{res_id}/scimeta/elements/".format(res_id=self.pid)
         put_data = {
             "title": "New Title",
@@ -62,10 +62,10 @@ class TestResourceScienceMetadata(HSRESTTestCase):
                 "name": "Creator 1",
                 "organization": None
             }, {
-                    "name": "Creator 2",
-                    "organization": "USU",
-                    "identifiers": {"ORCID": "https://orcid.org/011",
-                                    "ResearchGateID": "https://www.researchgate.net/001"}
+                "name": "Creator 2",
+                "organization": "USU",
+                "identifiers": {"ORCID": "https://orcid.org/011",
+                                "ResearchGateID": "https://www.researchgate.net/001"}
             }],
             "coverages": [{
                 "type": "box",
@@ -111,18 +111,18 @@ class TestResourceScienceMetadata(HSRESTTestCase):
                 }
             ],
             "funding_agencies": [
-                 {
-                     "agency_name": "NSF",
-                     "award_title": "Cyber Infrastructure",
-                     "award_number": "NSF-101-20-6789",
-                     "agency_url": "https://www.nsf.gov",
-                 },
-                 {
-                     "agency_name": "NSF2",
-                     "award_title": "Cyber Infrastructure2",
-                     "award_number": "NSF-123",
-                     "agency_url": "https://www.google.com",
-                 }
+                {
+                    "agency_name": "NSF",
+                    "award_title": "Cyber Infrastructure",
+                    "award_number": "NSF-101-20-6789",
+                    "agency_url": "https://www.nsf.gov",
+                },
+                {
+                    "agency_name": "NSF2",
+                    "award_title": "Cyber Infrastructure2",
+                    "award_number": "NSF-123",
+                    "agency_url": "https://www.google.com",
+                }
             ]
         }
         response = self.client.put(sysmeta_url, put_data, format='json')
@@ -140,7 +140,7 @@ class TestResourceScienceMetadata(HSRESTTestCase):
         self.assertEqual(str(self.resource.metadata.description), "New Description")
         self.assertEqual(str(self.resource.metadata.title), "New Title")
 
-    def test_put_scimeta_generic_resource_double_none(self):
+    def test_put_scimeta_composite_resource_double_none(self):
         sysmeta_url = "/hsapi/resource/{res_id}/scimeta/elements/".format(res_id=self.pid)
         put_data = {
             "title": "New Title",
@@ -252,18 +252,18 @@ class TestResourceScienceMetadata(HSRESTTestCase):
                 }
             ],
             "funding_agencies": [
-                 {
-                     "agency_name": "NSF",
-                     "award_title": "Cyber Infrastructure",
-                     "award_number": "NSF-101-20-6789",
-                     "agency_url": "https://www.nsf.gov",
-                 },
-                 {
-                     "agency_name": "NSF2",
-                     "award_title": "Cyber Infrastructure2",
-                     "award_number": "NSF-123",
-                     "agency_url": "https://www.google.com",
-                 }
+                {
+                    "agency_name": "NSF",
+                    "award_title": "Cyber Infrastructure",
+                    "award_number": "NSF-101-20-6789",
+                    "agency_url": "https://www.nsf.gov",
+                },
+                {
+                    "agency_name": "NSF2",
+                    "award_title": "Cyber Infrastructure2",
+                    "award_number": "NSF-123",
+                    "agency_url": "https://www.google.com",
+                }
             ]
         }
         response = self.client.put(sysmeta_url, put_data, format='json')
@@ -521,6 +521,6 @@ class TestResourceScienceMetadata(HSRESTTestCase):
             owner=self.user,
             title="Testing bulk metadata update for resource type - {}".format(resource_type),
             files=files
-            )
+        )
         resource_post_create_actions(resource=self.resource, user=self.user,
                                      metadata=self.resource.metadata)
