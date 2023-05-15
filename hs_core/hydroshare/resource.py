@@ -649,6 +649,7 @@ def create_new_version_resource(ori_res, new_res, user):
 
 
 def add_resource_files(pk, *files, **kwargs):
+    # 3
     """
     Called by clients to update a resource in HydroShare by adding one or more files.
 

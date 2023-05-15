@@ -312,6 +312,7 @@ def extract_files_with_paths(request):
 
 
 def add_files_to_resource(request, shortkey, *args, **kwargs):
+    # 1
     """
     This view function is called by AJAX in the folder implementation
     :param request: AJAX request

@@ -966,6 +966,7 @@ def resource_file_add_pre_process(resource, files, user, extract_metadata=False,
 # TODO: make this part of resource api. resource --> self.
 def resource_file_add_process(resource, files, user, extract_metadata=False,
                               source_names=[], **kwargs):
+    # 2
 
     from .resource import add_resource_files
     if __debug__:
@@ -984,6 +985,7 @@ def resource_file_add_process(resource, files, user, extract_metadata=False,
     # receivers need to change the values of this dict if file validation fails
     # in case of file validation failure it is assumed the resource type also deleted the file
     file_validation_dict = {'are_files_valid': True, 'message': 'Files are valid'}
+    # 4
     post_add_files_to_resource.send(sender=resource.__class__, files=files,
                                     source_names=source_names,
                                     resource=resource, user=user,
@@ -1007,6 +1009,7 @@ def create_empty_contents_directory(resource):
 
 def add_file_to_resource(resource, f, folder='', source_name='',
                          check_target_folder=False, add_to_aggregation=True, user=None):
+    # 4
     """
     Add a ResourceFile to a Resource.  Adds the 'format' metadata element to the resource.
     :param  resource: Resource to which file should be added

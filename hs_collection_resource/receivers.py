@@ -1,6 +1,6 @@
 from django.dispatch import receiver
 
-from hs_core.signals import pre_add_files_to_resource, pre_check_bag_flag, pre_download_file
+from hs_core.signals import pre_add_files_to_resource, pre_check_bag_flag, pre_download_file, post_add_files_to_resource
 from hs_core.hydroshare.utils import set_dirty_bag_flag
 
 from hs_collection_resource.models import CollectionResource
@@ -12,6 +12,12 @@ def pre_add_files_to_resource_handler(sender, **kwargs):
     validate_files_dict = kwargs['validate_files']
     validate_files_dict['are_files_valid'] = False
     validate_files_dict['message'] = 'Content files are not allowed in a collection'
+
+
+@receiver(post_add_files_to_resource, sender=CollectionResource)
+def post_add_files_to_resource_handler(sender, **kwargs):
+    res_obj = kwargs['resource']
+    set_dirty_bag_flag(res_obj)
 
 
 @receiver(pre_check_bag_flag, sender=CollectionResource)
