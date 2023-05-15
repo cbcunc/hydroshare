@@ -14,12 +14,6 @@ def pre_add_files_to_resource_handler(sender, **kwargs):
     validate_files_dict['message'] = 'Content files are not allowed in a collection'
 
 
-@receiver(post_add_files_to_resource, sender=CollectionResource)
-def post_add_files_to_resource_handler(sender, **kwargs):
-    res_obj = kwargs['resource']
-    set_dirty_bag_flag(res_obj)
-
-
 @receiver(pre_check_bag_flag, sender=CollectionResource)
 def pre_check_bag_flag_handler(sender, **kwargs):
 

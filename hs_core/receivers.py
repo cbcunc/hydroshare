@@ -6,7 +6,7 @@ from hs_core.signals import pre_metadata_element_create, pre_metadata_element_up
     pre_delete_resource, post_add_geofeature_aggregation, post_add_generic_aggregation, \
     post_add_netcdf_aggregation, post_add_raster_aggregation, post_add_timeseries_aggregation, \
     post_add_reftimeseries_aggregation, post_remove_file_aggregation, post_raccess_change, \
-    post_delete_file_from_resource
+    post_delete_file_from_resource, post_add_files_to_resource
 from hs_core.tasks import update_web_services
 from hs_core.models import BaseResource, Creator, Contributor, Party
 from django.conf import settings
@@ -15,6 +15,7 @@ from .forms import SubjectsForm, AbstractValidationForm, CreatorValidationForm, 
     LanguageValidationForm, ValidDateValidationForm, FundingAgencyValidationForm, \
     CoverageSpatialForm, CoverageTemporalForm, IdentifierForm, TitleValidationForm, \
     GeospatialRelationValidationForm
+from hs_core.hydroshare.utils import set_dirty_bag_flag
 
 
 @receiver(post_save, sender=User)
@@ -175,6 +176,12 @@ def metadata_element_pre_update_handler(sender, **kwargs):
         return {'is_valid': False, 'element_data_dict': None, "errors": element_form.errors}
 
 
+@receiver(post_add_files_to_resource, sender=BaseResource)
+def post_add_files_to_resource_handler(sender, **kwargs):
+    res_obj = kwargs['resource']
+    set_dirty_bag_flag(res_obj)
+
+
 @receiver(post_add_generic_aggregation)
 @receiver(post_add_geofeature_aggregation)
 @receiver(post_add_raster_aggregation)
@@ -183,7 +190,12 @@ def metadata_element_pre_update_handler(sender, **kwargs):
 @receiver(post_add_reftimeseries_aggregation)
 @receiver(post_remove_file_aggregation)
 @receiver(pre_delete_resource)
-@receiver(post_delete_file_from_resource)
+@receiver(post_delete_file_from_resource, sender=BaseResource)
+def post_delete_files_to_resource_handler(sender, **kwargs):
+    res_obj = kwargs['resource']
+    set_dirty_bag_flag(res_obj)
+
+
 @receiver(post_raccess_change)
 def hs_update_web_services(sender, **kwargs):
     """Signal to update resource web services."""

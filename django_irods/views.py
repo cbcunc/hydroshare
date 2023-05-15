@@ -96,7 +96,7 @@ def download(request, path, use_async=True, use_reverse_proxy=True,
         content_msg = "You do not have permission to download this resource!"
         response.content = content_msg
         return response
-
+# 
     istorage = res.get_irods_storage()
 
     irods_path = res.get_irods_path(path, prepend_short_id=False)

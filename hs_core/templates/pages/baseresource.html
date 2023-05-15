@@ -457,7 +457,8 @@
 
             <div class="col-xs-12 content-block">
                 <h3>
-                  <span>Content</span> 
+                  <span>Content</span>
+                  {{ cm | is_dirty }} 
                   {% if resource_edit_mode %}
                   <a data-toggle="tooltip" data-placement="auto"
                       href="https://www.youtube.com/watch?v=wTPGJY9-k18" target="_blank"

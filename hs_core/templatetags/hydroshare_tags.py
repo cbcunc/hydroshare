@@ -106,6 +106,12 @@ def resource_type(content):
 
 
 @register.filter
+def is_dirty(content):
+    content_model = content.get_content_model()
+    return content_model.getAVU('bag_modified')
+
+
+@register.filter
 def resource_first_author(content):
     if not content:
         return ''
