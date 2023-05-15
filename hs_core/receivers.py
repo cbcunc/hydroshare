@@ -176,7 +176,7 @@ def metadata_element_pre_update_handler(sender, **kwargs):
         return {'is_valid': False, 'element_data_dict': None, "errors": element_form.errors}
 
 
-@receiver(post_add_files_to_resource, sender=BaseResource)
+@receiver(post_add_files_to_resource)
 def post_add_files_to_resource_handler(sender, **kwargs):
     res_obj = kwargs['resource']
     set_dirty_bag_flag(res_obj)
@@ -190,7 +190,7 @@ def post_add_files_to_resource_handler(sender, **kwargs):
 @receiver(post_add_reftimeseries_aggregation)
 @receiver(post_remove_file_aggregation)
 @receiver(pre_delete_resource)
-@receiver(post_delete_file_from_resource, sender=BaseResource)
+@receiver(post_delete_file_from_resource)
 def post_delete_files_to_resource_handler(sender, **kwargs):
     res_obj = kwargs['resource']
     set_dirty_bag_flag(res_obj)
