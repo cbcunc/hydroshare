@@ -78,6 +78,12 @@ class Command(BaseCommand):
             action="store_true",
             help="dump tracking variables collected today",
         )
+        parser.add_argument(
+            "--recent-variables",
+            dest="recent_variables",
+            action="store_true",
+            help="dump tracking variables collected recently",
+        )
         parser.add_argument('lookback-days', nargs='?', default=1)
 
     def print_var(self, var_name, value, period=None):
@@ -204,6 +210,30 @@ class Command(BaseCommand):
                       'action=%s' % str(v.name),
                       vals]
             print('|'.join(values))
+    
+    def recent_variables(self, lookback=1):
+
+        today_start = timezone.datetime.now()
+
+        # adjust start date for look-back option
+        yesterday_start = today_start - datetime.timedelta(days=lookback)
+        variables = hs_tracking.Variable.objects.filter(
+            timestamp__gte=yesterday_start,
+            timestamp__lt=today_start
+        )
+        for v in variables:
+            uid = v.session.visitor.user.id if v.session.visitor.user else None
+
+            # make sure values are | separated (i.e. replace legacy format)
+            vals = self.dict_spc_to_pipe(v.value)
+
+            # encode variables as key value pairs (except for timestamp)
+            values = [str(v.timestamp),
+                      'user_id=%s' % str(uid),
+                      'session_id=%s' % str(v.session.id),
+                      'action=%s' % str(v.name),
+                      vals]
+            print('|'.join(values))
 
     def dict_spc_to_pipe(self, s):
 
@@ -250,3 +280,5 @@ class Command(BaseCommand):
             self.resources_details()
         if options["yesterdays_variables"]:
             self.yesterdays_variables(lookback=int(options['lookback-days']))
+        if options["recent_variables"]:
+            self.recent_variables(lookback=int(options['lookback-days']))
