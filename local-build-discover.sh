@@ -81,7 +81,7 @@ mkdir static/js
 mkdir static/css
 
 # Start Docker container and Run build
-docker run -i -v $HS_PATH:/hydroshare --name=nodejs node:$n_ver /bin/bash << eof
+docker run -i -v $HS_PATH:/hydroshare --name=nodejs --user=$HS_UID:$HS_GID node:$n_ver /bin/bash << eof
 
 cd hydroshare
 cd hs_discover
