@@ -37,11 +37,20 @@ class Command(BaseCommand):
             help='log errors to system log',
         )
 
+        parser.add_argument(
+            '--dryrun',
+            action='store_true',
+            dest='dryrun',
+            default=False,
+            help='Show what options would be edited without committing changes',
+        )
+
     def handle(self, *args, **options):
 
         logger = logging.getLogger(__name__)
         log_errors = options['log']
         echo_errors = not options['log']
+        dry_run = log_errors = options['dryrun']
 
         if len(options['resource_ids']) > 0:  # an array of resource short_id to check.
             for rid in options['resource_ids']:
@@ -50,7 +59,8 @@ class Command(BaseCommand):
                     repair_resource(resource, logger,
                                     echo_errors=echo_errors,
                                     log_errors=log_errors,
-                                    return_errors=False)
+                                    return_errors=False,
+                                    dry_run=dry_run)
                 except BaseResource.DoesNotExist:
                     msg = "resource {} not found".format(rid)
                     print(msg)
@@ -64,7 +74,8 @@ class Command(BaseCommand):
                     repair_resource(resource, logger,
                                     echo_errors=echo_errors,
                                     log_errors=log_errors,
-                                    return_errors=False)
+                                    return_errors=False,
+                                    dry_run=dry_run)
                 except BaseResource.DoesNotExist:
                     msg = "resource {} not found".format(r.short_id)
                     print(msg)
