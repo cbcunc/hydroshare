@@ -59,7 +59,7 @@
       minZoomLevel: minClusterZoom,
       keepSpiderfied: true,
       circleSpiralSwitchover: 9,
-      nearbyDistance: 5,
+      nearbyDistance: .05,
     });
     const infoWindows = [];
 
