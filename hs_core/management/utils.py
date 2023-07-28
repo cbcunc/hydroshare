@@ -17,6 +17,7 @@ import os
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from requests import post
 
 from django_irods.icommands import SessionException
@@ -818,3 +819,10 @@ def get_swat_meta_schema():
     meta_schema_path = "hs_core/management/model_aggr_meta_schema/swat.json"
     with open(meta_schema_path) as f:
         return json.loads(f.read())
+
+def find_resource_file_duplicates():
+    return ResourceFile.objects.values('resource_file', 'object_id') \
+    .annotate(count=Count('id')) \
+    .values('resource_file', 'object_id') \
+    .order_by() \
+    .filter(count__gt=1)

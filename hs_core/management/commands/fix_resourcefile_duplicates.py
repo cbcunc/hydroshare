@@ -10,8 +10,8 @@ This checks that there is only one ResourceFile for each iRods file
 """
 
 from django.core.management.base import BaseCommand
-from django.db.models import Count
 from hs_core.models import ResourceFile
+from hs_core.management.utils import find_resource_file_duplicates
 
 
 class Command(BaseCommand):
@@ -28,12 +28,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         dry_run = options['dryrun']
-
-        dup_resource_files = ResourceFile.objects.values('resource_file', 'object_id') \
-            .annotate(count=Count('id')) \
-            .values('resource_file', 'object_id') \
-            .order_by() \
-            .filter(count__gt=1)
+        dup_resource_files = find_resource_file_duplicates()
         if dup_resource_files:
             total = dup_resource_files.count()
             current = 1
