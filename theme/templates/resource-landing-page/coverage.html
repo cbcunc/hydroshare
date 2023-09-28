@@ -254,9 +254,7 @@
                                 {% if cm.resource_type == "CompositeResource" %}
                                     <button id="btn-update-resource-spatial-coverage"
                                             type="button" class="btn btn-info has-space-top"
-                                            {% if not cm.has_logical_spatial_coverage %}
-                                            style="display: none"
-                                            {% endif %}>
+                                            >
                                         <i class="fa fa-calculator" aria-hidden="true"></i> Set spatial coverage from content files
                                     </button>
                                 {% endif %}
