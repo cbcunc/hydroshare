@@ -89,6 +89,65 @@ def get_quota_usage_from_irods(username):
     return used_val
 
 
+def get_data_zone_usage_from_irods(username):
+    attname = username + '-usage'
+    istorage = IrodsStorage()
+    # get quota size for user in iRODS data zone by retrieving AVU set on irods bagit path
+    # collection
+    try:
+        uqDataZoneSize = istorage.getAVU(settings.IRODS_BAGIT_PATH, attname)
+        if uqDataZoneSize is None:
+            # user may not have resources in data zone, so corresponding quota size AVU may not
+            # exist for this user
+            uqDataZoneSize = -1
+        else:
+            uqDataZoneSize = float(uqDataZoneSize)
+    except SessionException:
+        # user may not have resources in data zone, so corresponding quota size AVU may not exist
+        # for this user
+        uqDataZoneSize = -1
+
+    if uqDataZoneSize < 0:
+        err_msg = 'no quota size AVU in data zone and user zone for user {}'.format(username)
+        logger.error(err_msg)
+        raise ValidationError(err_msg)
+    else:
+        used_val = uqDataZoneSize
+    return used_val
+
+
+def get_user_zone_usage_from_irods(username):
+    attname = username + '-usage'
+    istorage = IrodsStorage()
+    # get quota size for user in iRODS data zone by retrieving AVU set on irods bagit path
+    # collection
+
+    # get quota size for the user in iRODS user zone
+    try:
+        uz_bagit_path = os.path.join('/', settings.HS_USER_IRODS_ZONE, 'home',
+                                     settings.HS_IRODS_PROXY_USER_IN_USER_ZONE,
+                                     settings.IRODS_BAGIT_PATH)
+        uqUserZoneSize = istorage.getAVU(uz_bagit_path, attname)
+        if uqUserZoneSize is None:
+            # user may not have resources in user zone, so corresponding quota size AVU may not
+            # exist for this user
+            uqUserZoneSize = -1
+        else:
+            uqUserZoneSize = float(uqUserZoneSize)
+    except SessionException:
+        # user may not have resources in user zone, so corresponding quota size AVU may not exist
+        # for this user
+        uqUserZoneSize = -1
+
+    if uqUserZoneSize < 0:
+        err_msg = 'no quota size AVU in data zone and user zone for user {}'.format(username)
+        logger.error(err_msg)
+        raise ValidationError(err_msg)
+    else:
+        used_val = uqUserZoneSize
+    return used_val
+
+
 def update_quota_usage(username):
     """
     update quota usage by checking iRODS AVU to get the updated quota usage for the user. Note iRODS micro-service
