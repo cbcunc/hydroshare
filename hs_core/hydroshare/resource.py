@@ -105,15 +105,8 @@ def get_data_zone_usage_from_irods(username):
     except SessionException:
         # user may not have resources in data zone, so corresponding quota size AVU may not exist
         # for this user
-        uqDataZoneSize = -1
-
-    if uqDataZoneSize < 0:
-        err_msg = 'no quota size AVU in data zone and user zone for user {}'.format(username)
-        logger.error(err_msg)
-        raise ValidationError(err_msg)
-    else:
-        used_val = uqDataZoneSize
-    return used_val
+        uqDataZoneSize = 0
+    return uqDataZoneSize
 
 
 def get_user_zone_usage_from_irods(username):
@@ -137,15 +130,8 @@ def get_user_zone_usage_from_irods(username):
     except SessionException:
         # user may not have resources in user zone, so corresponding quota size AVU may not exist
         # for this user
-        uqUserZoneSize = -1
-
-    if uqUserZoneSize < 0:
-        err_msg = 'no quota size AVU in data zone and user zone for user {}'.format(username)
-        logger.error(err_msg)
-        raise ValidationError(err_msg)
-    else:
-        used_val = uqUserZoneSize
-    return used_val
+        uqUserZoneSize = 0
+    return uqUserZoneSize
 
 
 def update_quota_usage(username):
